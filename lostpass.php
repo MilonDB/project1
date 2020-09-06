@@ -9,7 +9,7 @@
 
 <form>
     <input type="email" name="email" id="email" required>
-    <input type="submit" action="">
+    <input type="submit"> <!-- mailto ?-->
 </form>
 
 
