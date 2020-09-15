@@ -1,4 +1,4 @@
-CREATE DATABASE project1;
+CREATE DATABASE IF NOT EXISTS project1;
 
 /* Stelt aan om de volgende statements uit te voeren op database project1 */
 USE project1;
@@ -17,7 +17,7 @@ CREATE TABLE Persoon(
     username NOT NULL VARCHAR(255),
     voornaam NOT NULL VARCHAR(255),
     tussenvoegsel VARCHAR(255),
-    achternaam VARCHAR(255),
+    achternaam NOT NULL VARCHAR(255),
     PRIMARY KEY(id),
     FOREIGN KEY(id) REFERENCES Account(id)
 );
