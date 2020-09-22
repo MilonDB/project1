@@ -22,3 +22,13 @@ CREATE TABLE Persoon(
     PRIMARY KEY(id),
     FOREIGN KEY(account_id) REFERENCES Account(id)
 );
+
+INSERT INTO
+    account (`id`, `email`, `password`)
+VALUES
+    (NULL, 'milondb@outlook.com', 'milon1');
+
+INSERT INTO
+    persoon(account_id, username, voornaam, achternaam)
+VALUES
+    ('3', 'milondb', 'milon', 'den boer');
