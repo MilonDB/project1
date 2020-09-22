@@ -6,18 +6,18 @@ USE project1;
 /* Maak tabel account aan, voegt daar de nodige kolommen toe en stelt als primary key ID in, die we later gaan gebruiken bij tabel Persoon. */
 CREATE TABLE Account(
     id INT NOT NULL AUTO_INCREMENT,
-    email VARCHAR(255) UNIQUE,
-    password VARCHAR(255),
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
     PRIMARY KEY(id)
 );
 
 /* Maak tabel persoon aan, voegt dar de nodige kolommen toe en stelt als foreign key de ID uit tabel account aan, zodat data gekoppeld wordt. */
 CREATE TABLE Persoon(
     id INT NOT NULL AUTO_INCREMENT,
-    username NOT NULL VARCHAR(255),
-    voornaam NOT NULL VARCHAR(255),
+    username VARCHAR(255) NOT NULL,
+    voornaam VARCHAR(255) NOT NULL,
     tussenvoegsel VARCHAR(255),
-    achternaam NOT NULL VARCHAR(255),
+    achternaam VARCHAR(255) NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY(id) REFERENCES Account(id)
 );
