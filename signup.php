@@ -1,5 +1,12 @@
 <?php
 
+include "database.php";
+
+$db = new database('localhost','root','','project1','utf8');
+
+// $username = $_POST[$username];
+// $password = $_POST[$password];
+// $email = $_POST[$email];
 
 ?>
 
