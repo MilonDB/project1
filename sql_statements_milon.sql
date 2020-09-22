@@ -14,10 +14,11 @@ CREATE TABLE Account(
 /* Maak tabel persoon aan, voegt dar de nodige kolommen toe en stelt als foreign key de ID uit tabel account aan, zodat data gekoppeld wordt. */
 CREATE TABLE Persoon(
     id INT NOT NULL AUTO_INCREMENT,
+    account_id INT,
     username VARCHAR(255) NOT NULL,
     voornaam VARCHAR(255) NOT NULL,
     tussenvoegsel VARCHAR(255),
     achternaam VARCHAR(255) NOT NULL,
     PRIMARY KEY(id),
-    FOREIGN KEY(id) REFERENCES Account(id)
+    FOREIGN KEY(account_id) REFERENCES Account(id)
 );
