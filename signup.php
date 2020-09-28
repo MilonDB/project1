@@ -4,24 +4,29 @@ include "database.php";
 
 $db = new database('localhost', 'root', '', 'project1', 'utf8');
 
-
+// check op isset
 $username = $_POST['username'];
 $password = $_POST['password'];
+$repassword = $_POST['repassword'];
 $email = $_POST['email'];
 $voornaam = $_POST['voornaam'];
 $tussenvoegsel = $_POST['tussenvoegsel'];
 $achternaam = $_POST['achternaam'];
 
-echo $username;
 
-$sql_account = "INSERT INTO account('email','password') VALUES ('$email','$password')";
-$sql_persoon = "INSERT INTO persoon('username','voornaam','tussenvoegsel','achternaam') VALUES ('$username','$voornaam','$tussenvoegsel','$achternaam')";
+$db->insertAccount($email, $password);
 
-if (isset($_POST['submit'])) {
-    exec($sql_account, $sql_persoon);
-}else {
-    echo "Dit werkt niet zo.";
-}
+// echo $username;
+
+// $sql_account = "INSERT INTO account('email','password') VALUES ($email,$password)";
+// $sql_persoon = "INSERT INTO persoon('username','voornaam','tussenvoegsel','achternaam') VALUES ('$username','$voornaam','$tussenvoegsel','$achternaam')";
+
+// if (isset($_POST['submit'])) {
+//     exec($sql_account, $sql_persoon);
+// }else {
+//     echo "Error";
+// }
+
 
 
 ?>
