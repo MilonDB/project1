@@ -67,18 +67,30 @@ class database
 
             $this->db->rollBack();
             throw ($e);
-            echo "Rollback uitgevoerd!";
+            echo "Rollback uitgevoerd! Fout bij Account";
         }
     }
 
-    function insertPersoon(){
+    function insertPersoon($id, $username, $voornaam, $tussenvoegsel, $achternaam, $lastID)
+    {
         try {
             //begin transaction
             $this->db->beginTransaction();
 
             echo "Dit is om te kijken of persoon werkt. <BR>";
-            $sql_persoon = "INSERT INTO persoon(id, account_id,username,voornaam,tussenvoegsel,achternaam)";
+            $sql_persoon = "INSERT INTO persoon(id, account_id,username,voornaam,tussenvoegsel,achternaam) VALUES (:id, :account_id,:username,:voornaam,:tussenvoegsel,:achternaam)";
+            echo "<br>sql voor persoon: " . $sql_persoon . "<br>";
+
+            $stmtPersoon = $this->db->prepare($sql_persoon);
+            print_r($sql_persoon);
+
+            $stmtExec = $stmtPersoon->execute(['id' => NULL, 'account_id' => $lastID, 'username' => $username, 'voornaam' => $voornaam, 'tussenvoegsel' => $tussenvoegsel, 'achternaam' => $achternaam]);
+
+            $this->db->commit();
         } catch (Exception $e) {
-            //throw $th;
+            $this->db->rollBack();
+            throw ($e);
+            echo "Rollback uitgevoerd! Fout bij Persoon";
         }
+    }
 }
