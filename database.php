@@ -51,30 +51,34 @@ class database
             print_r($statement);
 
             // password hashen
-            // password_hash($password, PASSWORD_DEFAULT);
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            $statementExec = $statement->execute(['id' => NULL, 'email' => $email, 'password' => $hashed_password]);
 
-            $statementExec = $statement->execute(['id'=>NULL, 'email'=>$email, 'password'=>password_hash($password, PASSWORD_DEFAULT)]);
+            $lastID = $this->db->lastInsertId();
+            echo "<BR>Laatste ingevoerde ID= ";
+            print_r($lastID);
 
             $this->db->commit();
 
             //lastInsertId() -> meegeven aan je insert van je persoon
-            
+
 
         } catch (Exception $e) {
 
             $this->db->rollBack();
             throw ($e);
+            echo "Rollback uitgevoerd!";
         }
     }
 
-    // function insertPersoon(){
-    //     try {
-    //         //begin transaction
-    //         $this->db->beginTransaction();
+    function insertPersoon(){
+        try {
+            //begin transaction
+            $this->db->beginTransaction();
 
-    //         echo "Dit is om te kijken of persoon werkt. <BR>";
-    //         $sql_persoon = "INSERT INTO persoon()";
-    //     } catch (Exception $e) {
-    //         //throw $th;
-    //     }
+            echo "Dit is om te kijken of persoon werkt. <BR>";
+            $sql_persoon = "INSERT INTO persoon(id, account_id,username,voornaam,tussenvoegsel,achternaam)";
+        } catch (Exception $e) {
+            //throw $th;
+        }
 }
