@@ -34,35 +34,47 @@ class database
     function insertAccount($email, $password)
     {
 
-        // try -> catch
-        // begin transaction
-        // committen
+        // try -> catch DONE
+        // begin transaction DONE
+        // committen DONE
 
 
-    try{
+        try {
             // begin transaction
+            $this->db->beginTransaction();
 
-            echo "zomaar";
-            $sql = "INSERT INTO account(id,email,password) VALUES (?, :email, ?)";
-            echo 'sql:' . $sql;
+            echo "Testbericht <br>";
+            $sql = "INSERT INTO account(id,email,password) VALUES (:id,:email,:password)";
+            echo 'sql:' . $sql . "<br>";
 
             $statement = $this->db->prepare($sql);
             print_r($statement);
 
             // password hashen
+            // password_hash($password, PASSWORD_DEFAULT);
 
-            $statementExec = $statement->execute([NULL, 'email' => $email, $password]);
+            $statementExec = $statement->execute(['id'=>NULL, 'email'=>$email, 'password'=>password_hash($password, PASSWORD_DEFAULT)]);
+
+            $this->db->commit();
 
             //lastInsertId() -> meegeven aan je insert van je persoon
+            
 
+        } catch (Exception $e) {
 
-    }catch(){
-
-        // pdo rollback
+            $this->db->rollBack();
+            throw ($e);
+        }
     }
-       
 
-        //print_r($statementExec);
-        
-    }
+    // function insertPersoon(){
+    //     try {
+    //         //begin transaction
+    //         $this->db->beginTransaction();
+
+    //         echo "Dit is om te kijken of persoon werkt. <BR>";
+    //         $sql_persoon = "INSERT INTO persoon()";
+    //     } catch (Exception $e) {
+    //         //throw $th;
+    //     }
 }
