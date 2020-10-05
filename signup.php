@@ -5,7 +5,7 @@ include "database.php";
 $db = new database('localhost', 'root', '', 'project1', 'utf8');
 
 // $id = $_POST['id'];
-// $lastID = $_POST['account_id'];
+$lastID = $_POST['lastID'];
 $username = $_POST['username'];
 $password = $_POST['password'];
 $repassword = $_POST['repassword'];
@@ -14,9 +14,9 @@ $voornaam = $_POST['voornaam'];
 $tussenvoegsel = $_POST['tussenvoegsel'];
 $achternaam = $_POST['achternaam'];
 
-
 $db->insertAccount($email, $password);
-$db->insertPersoon($id, $lastID, $username, $voornaam, $tussenvoegsel, $achternaam);
+$db->insertPersoon($lastID, $username, $voornaam, $tussenvoegsel, $achternaam);
+
 
 // echo $username;
 

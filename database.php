@@ -71,13 +71,13 @@ class database
         }
     }
 
-    function insertPersoon($id, $username, $voornaam, $tussenvoegsel, $achternaam, $lastID)
+    function insertPersoon($username, $voornaam, $tussenvoegsel, $achternaam, $lastID)
     {
         try {
             //begin transaction
             $this->db->beginTransaction();
 
-            echo "Dit is om te kijken of persoon werkt. <BR>";
+            echo "Dit is om te kijken of persoon werkt." . "<BR>";
             $sql_persoon = "INSERT INTO persoon(id, account_id,username,voornaam,tussenvoegsel,achternaam) VALUES (:id, :account_id,:username,:voornaam,:tussenvoegsel,:achternaam)";
             echo "<br>sql voor persoon: " . $sql_persoon . "<br>";
 
