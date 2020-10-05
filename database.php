@@ -59,6 +59,7 @@ class database
             print_r($lastID);
 
             $this->db->commit();
+            return $lastID;
 
             //lastInsertId() -> meegeven aan je insert van je persoon
 
@@ -78,7 +79,7 @@ class database
             $this->db->beginTransaction();
 
             echo "Dit is om te kijken of persoon werkt." . "<BR>";
-            $sql_persoon = "INSERT INTO persoon(id, account_id,username,voornaam,tussenvoegsel,achternaam) VALUES (:id, :account_id,:username,:voornaam,:tussenvoegsel,:achternaam)";
+            $sql_persoon = "INSERT INTO persoon(id, account_id,username,voornaam,tussenvoegsel,achternaam) VALUES (:id, :account_id ,:username,:voornaam,:tussenvoegsel,:achternaam)";
             echo "<br>sql voor persoon: " . $sql_persoon . "<br>";
 
             $stmtPersoon = $this->db->prepare($sql_persoon);
