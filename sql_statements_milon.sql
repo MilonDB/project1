@@ -7,8 +7,11 @@ USE project1;
 CREATE TABLE Account(
     id INT NOT NULL AUTO_INCREMENT,
     email VARCHAR(255) NOT NULL UNIQUE,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    type VARCHAR(255),
     password VARCHAR(255) NOT NULL,
-    PRIMARY KEY(id)
+    PRIMARY KEY(id),
+    FOREIGN KEY(type) REFERENCES usertype(id)
 );
 
 /* Maak tabel persoon aan, voegt dar de nodige kolommen toe en stelt als foreign key de ID uit tabel account aan, zodat data gekoppeld wordt. */
@@ -23,12 +26,10 @@ CREATE TABLE Persoon(
     FOREIGN KEY(account_id) REFERENCES Account(id)
 );
 
-INSERT INTO
-    account (`id`, `email`, `password`)
-VALUES
-    (NULL, 'milondb@outlook.com', 'milon1');
-
-INSERT INTO
-    persoon(account_id, username, voornaam, achternaam)
-VALUES
-    ('3', 'milondb', 'milon', 'den boer');
+CREATE TABLE usertype(
+    id INT NOT NULL AUTO_INCREMENT,
+    type VARCHAR(255),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(id)
+);
