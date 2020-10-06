@@ -70,7 +70,7 @@ class database
         }
     }
 
-    // Functie om persoon te inserten
+    // Functie om persoon te inserten in de database.
     function insertPersoon($voornaam, $tussenvoegsel, $achternaam, $lastID)
     {
         try {
