@@ -36,7 +36,7 @@ class database
     function insertAccount($email, $password, $username)
     {
         try {
-            // begin transactie naar database
+            // begin transactie naar database. 
             $this->db->beginTransaction();
 
             echo "Testbericht <br>";

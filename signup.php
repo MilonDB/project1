@@ -26,6 +26,7 @@ if (isset($_POST['submit'])) {
         $tussenvoegsel = $_POST['tussenvoegsel'];
         $achternaam = $_POST['achternaam'];
 
+        // Maak database connectie aan en voer data in de tabellen.
         $db = new database('localhost', 'root', '', 'project1', 'utf8');
         $account_id = $db->insertAccount($email, $password, $username);
         $db->insertPersoon($voornaam, $tussenvoegsel, $achternaam, $account_id);
