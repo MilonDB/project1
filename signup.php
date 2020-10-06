@@ -27,8 +27,8 @@ if (isset($_POST['submit'])) {
         $achternaam = $_POST['achternaam'];
 
         $db = new database('localhost', 'root', '', 'project1', 'utf8');
-        $account_id = $db->insertAccount($email, $password);
-        $db->insertPersoon($username, $voornaam, $tussenvoegsel, $achternaam, $account_id);
+        $account_id = $db->insertAccount($email, $password, $username);
+        $db->insertPersoon($voornaam, $tussenvoegsel, $achternaam, $account_id);
     }
 }
 

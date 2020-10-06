@@ -33,7 +33,7 @@ class database
     }
 
     // Functie om account te inserten
-    function insertAccount($email, $password)
+    function insertAccount($email, $password, $username)
     {
         try {
             // begin transaction
@@ -41,7 +41,7 @@ class database
 
             echo "Testbericht <br>";
             // $sql is nu niets meer dan een string, om deze uit te kunnen voeren, moeten wij hem preparen
-            $sql = "INSERT INTO account(id,email,password) VALUES (:id,:email,:password)";
+            $sql = "INSERT INTO account(id,email,password,username) VALUES (:id,:email,:password,:username)";
             echo 'sql:' . $sql . "<br>";
 
             // Het preparen om $sql uit te voeren gebeurt hier
@@ -52,7 +52,7 @@ class database
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
             // Hier wordt de statement executed
-            $statementExec = $statement->execute(['id' => NULL, 'email' => $email, 'password' => $hashed_password]);
+            $statementExec = $statement->execute(['id' => NULL, 'email' => $email, 'password' => $hashed_password, 'username' => $username]);
 
             // Hier wordt de laatste id opgehaald om te gebruiken als foreign key naar Persoon
             $lastID = $this->db->lastInsertId();
@@ -71,7 +71,7 @@ class database
     }
 
     // Functie om persoon te inserten
-    function insertPersoon($username, $voornaam, $tussenvoegsel, $achternaam, $lastID)
+    function insertPersoon($voornaam, $tussenvoegsel, $achternaam, $lastID)
     {
         try {
             //begin transaction
@@ -79,7 +79,7 @@ class database
 
             echo "Dit is om te kijken of persoon werkt." . "<BR>";
             // $sql_persoon is nu niets meer dan een string, om deze uit te kunnen voeren, moeten wij hem preparen
-            $sql_persoon = "INSERT INTO persoon(id, account_id,username,voornaam,tussenvoegsel,achternaam) VALUES (:id, :account_id ,:username,:voornaam,:tussenvoegsel,:achternaam)";
+            $sql_persoon = "INSERT INTO persoon(id, account_id,voornaam,tussenvoegsel,achternaam) VALUES (:id, :account_id ,:voornaam,:tussenvoegsel,:achternaam)";
             echo "<br>sql voor persoon: " . $sql_persoon . "<br>";
 
             // Het preparen om $sql_persoon uit te voeren gebeurt hier
@@ -87,7 +87,7 @@ class database
             print_r($sql_persoon);
 
             // Hier wordt de statement executed
-            $stmtExec = $stmtPersoon->execute(['id' => NULL, 'account_id' => $lastID, 'username' => $username, 'voornaam' => $voornaam, 'tussenvoegsel' => $tussenvoegsel, 'achternaam' => $achternaam]);
+            $stmtExec = $stmtPersoon->execute(['id' => NULL, 'account_id' => $lastID, 'voornaam' => $voornaam, 'tussenvoegsel' => $tussenvoegsel, 'achternaam' => $achternaam]);
             // Hier wordt de statement gecommit naar de database
             $this->db->commit();
         } catch (Exception $e) {
