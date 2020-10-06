@@ -8,8 +8,10 @@ CREATE TABLE Account(
     id INT NOT NULL AUTO_INCREMENT,
     email VARCHAR(255) NOT NULL UNIQUE,
     username VARCHAR(255) NOT NULL UNIQUE,
-    type VARCHAR(255),
+    type INT,
     password VARCHAR(255) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(id),
     FOREIGN KEY(type) REFERENCES usertype(id)
 );
@@ -22,6 +24,8 @@ CREATE TABLE Persoon(
     voornaam VARCHAR(255) NOT NULL,
     tussenvoegsel VARCHAR(255),
     achternaam VARCHAR(255) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(id),
     FOREIGN KEY(account_id) REFERENCES Account(id)
 );
