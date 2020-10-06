@@ -15,7 +15,7 @@ if (isset($_POST['submit'])) {
         }
     }
 
-    // Met deze if statement wordt gecheckt of de velden ingevuld zijn. Zo ja wordt de database connectie gemaakt en de data ingevoerd.
+    //Met deze if statement wordt gecheckt of de velden ingevuld zijn. Zo ja wordt de database connectie gemaakt en de data ingevoerd.
     if (!$error) {
 
         $username = $_POST['username'];

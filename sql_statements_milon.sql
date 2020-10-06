@@ -26,6 +26,7 @@ CREATE TABLE Persoon(
     FOREIGN KEY(account_id) REFERENCES Account(id)
 );
 
+/* Maak tabel usertype aan. */
 CREATE TABLE usertype(
     id INT NOT NULL AUTO_INCREMENT,
     type VARCHAR(255),
