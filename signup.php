@@ -1,5 +1,6 @@
 <?php
 
+include "fieldval.php";
 include "database.php";
 
 //Na de button press wordt de array aangemaakt met de fieldnames
@@ -15,6 +16,14 @@ if (isset($_POST['submit'])) {
         }
     }
 
+    if ($_POST['password'] === $_POST['repassword']) {
+        echo "Wachtwoorden komen overeen";
+    } else {
+        $error = true;
+        echo '<script>alert("Wachtwoorden zijn niet gelijk!")</script>'; 
+        
+    }
+
     //Met deze if statement wordt gecheckt of de velden ingevuld zijn. Zo ja wordt de database connectie gemaakt en de data ingevoerd.
     if (!$error) {
 
@@ -25,6 +34,7 @@ if (isset($_POST['submit'])) {
         $voornaam = $_POST['voornaam'];
         $tussenvoegsel = $_POST['tussenvoegsel'];
         $achternaam = $_POST['achternaam'];
+
 
         // Maak database connectie aan en voer data in de tabellen.
         $db = new database('localhost', 'root', '', 'project1', 'utf8');

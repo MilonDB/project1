@@ -40,7 +40,7 @@ class database
             $this->db->beginTransaction();
 
             echo "Testbericht <br>";
-            // $sql is nu niets meer dan een string, om deze uit te kunnen voeren, moeten wij hem preparen
+            // $sql is nu niets meer dan een string, om deze uit te kunnen voeren, moeten wij hem preparen, klaarzetten om te executen.
             $sql = "INSERT INTO account(id,email,password,username) VALUES (:id,:email,:password,:username)";
             echo 'sql:' . $sql . "<br>";
 
@@ -48,7 +48,7 @@ class database
             $statement = $this->db->prepare($sql);
             print_r($statement);
 
-            // password hashen
+            // password hashen met ingebouwde php functie password_hash
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
             // Hier wordt de statement executed

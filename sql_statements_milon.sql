@@ -12,7 +12,7 @@ CREATE TABLE Account(
     password VARCHAR(255) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY(id),
+    v PRIMARY KEY(id),
     FOREIGN KEY(type_id) REFERENCES usertype(id)
 );
 
@@ -38,3 +38,8 @@ CREATE TABLE usertype(
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(id)
 );
+
+INSERT INTO
+    Account('id', 'email', 'username', 'type_id', 'password')
+VALUES
+('1', 'milondb@outlook.com', 'admin', '1', 'welkom1');
