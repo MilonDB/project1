@@ -27,6 +27,7 @@ if (isset($_POST['submit'])) {
 
         $error = False;
 
+        // als bevestigd is dat de velden ingevuld zijn, wordt nog een check gedaan om te kijken of password en repassword overeenkomen.
         if ($_POST['password'] === $_POST['repassword']) {
             echo "Wachtwoorden komen overeen";
             echo "U wordt nu doorverwezen naar de login.";
@@ -34,8 +35,8 @@ if (isset($_POST['submit'])) {
 
             // Maak database connectie aan en voer data in de tabellen.
             $db = new database('localhost', 'root', '', 'project1', 'utf8');
-            $account_id = $db->insert_update_Account($email, $password, $username);
-            $db->insert_update_Persoon($voornaam, $tussenvoegsel, $achternaam, $account_id);
+            $aanmaken = $db->register($username, $db::USER, $voornaam, $tussenvoegsel, $achternaam, $email, $password);
+        
         } else {
             $error = true;
             echo 'wachtwoorden komen niet overeen! Probeer opnieuw!';
