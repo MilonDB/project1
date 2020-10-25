@@ -5,41 +5,42 @@ include "database.php";
 
 //Na de button press wordt de array aangemaakt met de fieldnames
 if (isset($_POST['submit'])) {
-    $fieldnames = ['username', 'password', 'repassword', 'voornaam', 'achternaam', 'tussenvoegsel', 'email'];
+    $fields = ['username', 'password', 'repassword', 'voornaam', 'achternaam', 'email'];
 
-    $error = False;
-    // Loopt over de field heen om te kijken of velden ingevuld zijn. Zo nee, wordt $error true.
-    foreach ($fieldnames as $fieldname) {
-        if (!isset($_POST[$fieldname]) || empty($_POST[$fieldname])) {
-            $error = true;
-            echo "Error gevonden, velden zijn niet correct ingevuld!";
-        }
-    }
+    
 
-    if ($_POST['password'] === $_POST['repassword']) {
-        echo "Wachtwoorden komen overeen";
-    } else {
-        $error = true;
-        echo '<script>alert("Wachtwoorden zijn niet gelijk!")</script>'; 
-        
-    }
+    $validate = new fieldVal();
+    $check =  $validate->filled_fields($fields);
+
+
 
     //Met deze if statement wordt gecheckt of de velden ingevuld zijn. Zo ja wordt de database connectie gemaakt en de data ingevoerd.
-    if (!$error) {
+    if ($check) {
 
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-        $repassword = $_POST['repassword'];
-        $email = $_POST['email'];
-        $voornaam = $_POST['voornaam'];
-        $tussenvoegsel = $_POST['tussenvoegsel'];
-        $achternaam = $_POST['achternaam'];
+        $username = trim(strtolower($_POST['username']));
+        $password = trim(strtolower($_POST['password']));
+        $repassword = trim(strtolower($_POST['repassword']));
+        $email = trim(strtolower($_POST['email']));
+        $voornaam = trim(strtolower($_POST['voornaam']));
+        $tussenvoegsel = trim(strtolower($_POST['tussenvoegsel']));
+        $achternaam = trim(strtolower($_POST['achternaam']));
 
+        $error = False;
 
-        // Maak database connectie aan en voer data in de tabellen.
-        $db = new database('localhost', 'root', '', 'project1', 'utf8');
-        $account_id = $db->insertAccount($email, $password, $username);
-        $db->insertPersoon($voornaam, $tussenvoegsel, $achternaam, $account_id);
+        if ($_POST['password'] === $_POST['repassword']) {
+            echo "Wachtwoorden komen overeen";
+            echo "U wordt nu doorverwezen naar de login.";
+            header("refresh:3;url=index.php"); 
+
+            // Maak database connectie aan en voer data in de tabellen.
+            $db = new database('localhost', 'root', '', 'project1', 'utf8');
+            $account_id = $db->insert_update_Account($email, $password, $username);
+            $db->insert_update_Persoon($voornaam, $tussenvoegsel, $achternaam, $account_id);
+        } else {
+            $error = true;
+            echo 'wachtwoorden komen niet overeen! Probeer opnieuw!';
+        }
+
     }
 }
 
@@ -57,12 +58,12 @@ if (isset($_POST['submit'])) {
 <body>
 
     <form method="post" action="signup.php" id="register">
-        <input type="text" name="voornaam" id="voornaam" placeholder="voornaam" required><br>
-        <input type="text" name="tussenvoegsel" id="tussenvoegsel" placeholder="tussenvoegsel (optioneel)"><br>
-        <input type="text" name="achternaam" id="achternaam" placeholder="achternaam" required><br>
-        <input type="email" name="email" id="email" placeholder="email" required><br>
-        <input type="text" name="username" id="username" placeholder="username" required><br>
-        <input type="password" name="password" id="password" placeholder="password" required><br>
+        <input type="text" name="voornaam" id="voornaam" value="<?php echo isset($_POST['voornaam']) ?>" placeholder="voornaam"><br>
+        <input type="text" name="tussenvoegsel" id="tussenvoegsel" value="<?php echo isset($_POST['tussenvoegsel']) ? htmlentities($_POST['tussenvoegsel']) : ''; ?>" placeholder="tussenvoegsel (optioneel)"><br>
+        <input type="text" name="achternaam" id="achternaam" placeholder="achternaam" value="<?php echo isset($_POST['achternaam']) ? htmlentities($_POST['achternaam']) : ''; ?>"><br>
+        <input type="email" name="email" id="email" placeholder="email" value="<?php echo isset($_POST['email']) ? htmlentities($_POST['email']) : ''; ?>" required><br>
+        <input type="text" name="username" id="username" placeholder="username" value="<?php echo isset($_POST['username']) ? htmlentities($_POST['username']) : ''; ?>" required><br>
+        <input type="password" name="password" id="password" placeholder="password" value="<?php echo isset($_POST['password']) ? htmlentities($_POST['password']) : ''; ?>" required><br>
         <input type="password" name="repassword" id="repassword" placeholder="repeat password" required><br>
         <input type="submit" name='submit' value="register"><br>
         <a href="index.php">Heb je al een account? Ga terug naar login.</a>

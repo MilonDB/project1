@@ -1,30 +1,47 @@
 <?php
 
 include "database.php";
-session_start();
 
+if (session_status() == PHP_SESSION_ACTIVE) {
+    echo 'Session is active';
+} else {
+    echo "session is niet active" . "<br>";
+}
 
 
 if (isset($_POST['login'])) {
-    $inlogvelden = ['username', 'password'];
+    $loginvelden = ['username', 'password'];
 
     $error = false;
 
-    foreach ($inlogvelden as $inlogvelden) {
-        if (!(isset($_POST['inlogvelden']) || empty($_POST['inlogvelden']))) {
+    foreach ($loginvelden as $loginveld) {
+        if (!isset($_POST[$loginveld]) || empty($_POST[$loginveld])) {
             $error = true;
-            echo "Error bij het inloggen! Een of meerdere velden zijn niet ingevuld.";
+            echo "Error gevonden, velden zijn niet correct ingevuld!" . "<BR>" . "<BR>";
+            echo '<a href="index.php">Probeer nog een keer</a>';
+            return;
         }
     }
 
-    if (!$error) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
-        $username = $_POST['username'];
-        $password = $_POST['password'];
 
-        session_start();
-    }
+    $db = new database('localhost', 'root', '', 'project1', 'utf8');
+    $db->user_confirmation($username, $password);
+
+    // exit();
+    // if (session_status() == PHP_SESSION_ACTIVE) {
+    //     echo 'Session is active';
+    // }
 }
+
+
+
+
+
+
+
 
 ?>
 
