@@ -42,4 +42,10 @@ CREATE TABLE usertype(
 INSERT INTO
     Account('id', 'email', 'username', 'type_id', 'password')
 VALUES
-('1', 'milondb@outlook.com', 'admin', '1', 'welkom1');
+    (
+        '1',
+        'milondb@outlook.com',
+        'admin',
+        '1',
+        'welkom1'
+    );

@@ -1,10 +1,14 @@
 <?php
 
+// CLASS FOR FIELDVALIDATION
+
 class fieldVal
 {
-
+    // functie om te checken of fields gevuld zijn
     public function filled_fields($fields)
     {
+
+        // als $fields een array is, gaat de error die normaal TRUE is op FALSE. 
         if (is_array($fields)) {
 
             $error = False;
@@ -16,7 +20,7 @@ class fieldVal
                     $error = True;
                 }
             }
-
+            // als er geen error is dan return true.
             if (!$error) {
                 return true;
             }
@@ -25,6 +29,4 @@ class fieldVal
             echo "Geen array gevonden.";
         }
     }
-
-
 }

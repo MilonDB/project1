@@ -4,6 +4,8 @@
 class database
 {
 
+
+    //instantieer de database
     private $host;
     private $username;
     private $password;
@@ -30,7 +32,7 @@ class database
             // dsn = data source name
             $conn = "mysql:host=$this->host;dbname=$this->database;charset=$this->charset";
             $this->db = new PDO($conn, $this->username, $this->password);
-            echo "Database connectie gemaakt.";
+            // echo "Database connectie gemaakt.";
         } catch (PDOException $e) {
             echo $e->getMessage();
             exit("Error");
@@ -52,21 +54,26 @@ class database
         return true;
     }
 
-    private function admin_check($username){
+    // Functie om te checken of inlogger een admin is of niet.
+    public function admin_check($username)
+    {
         $sql = "SELECT type_id FROM account WHERE username = :username";
 
         $statement = $this->db->prepare($sql);
 
         $statement->execute(['username' => $username]);
 
+        // fetch haalt data op uit database en plaatst in array
         $fetched = $statement->fetch();
 
+        // Als de type_id van de gefetchde data overeenkomt met admin, dan ga je naar welkom_admin.php, anders ga je naar welcome_user.php
         if ($fetched['type_id'] == self::ADMIN) {
             //gebruiker is admin
             return true;
+            header('refresh:4;url=welcome_admin.php');
         }
-            // gebruiker is geen admin
-            return false;
+        // gebruiker is geen admin
+        return false;
     }
 
 
@@ -76,12 +83,6 @@ class database
         $updated_at = date('Y-m-d H:i:s');
         if (is_null($id)) {
 
-
-            // if (!$this->existing_username_check($username)) {
-            //     return "Username already exists. Please pick another one, and try again.";
-            // }
-
-            echo "Testbericht <br>";
             // $sql is nu niets meer dan een string, om deze uit te kunnen voeren, moeten wij hem preparen, klaarzetten om te executen.
             $sql = "INSERT INTO account VALUES (NULL,:email,:password,:username, :created, :updated, :type_id)";
             // echo 'sql:' . $sql . "<br>";
@@ -100,6 +101,7 @@ class database
             $account_id = $this->db->lastInsertId();
             return $account_id;
         } else {
+            // Anders gebeurt er niets.
             $sql = "UPDATE account SET email= :email, username = :username,updated_at = :updated, type_id = :type_id' WHERE id = :id";
 
             $statement = $this->db->prepare($sql);
@@ -146,36 +148,27 @@ class database
         }
     }
 
+
+    // Registratiefunctie
     public function register($username, $type_id, $voornaam, $tussenvoegsel, $achternaam, $email, $password)
     {
         try {
+            //Initiates a transaction to the database
             $this->db->beginTransaction();
 
-            //TODO: existing_user_check
+            // Als username al bestaat dan moet er een andere gekozen worden.
+            if (!$this->existing_username_check($username)) {
+                echo "username bestaat al! probeer opnieuw";
+                header('refresh:5;url=signup.php');
+                exit;
+            }
 
+            // Account_id wordt aangemaakt.
+            $account_id = $this->insert_update_Account(NULL, $email, $password, $username, $type_id);
+            $this->insert_update_Persoon(NULL, $voornaam, $tussenvoegsel, $achternaam, $account_id);
 
-            $account_id = $this->insert_update_Account(NULL, $email,$password,$username,$type_id);
-            $this->insert_update_Persoon(NULL, $voornaam,$tussenvoegsel,$achternaam,$account_id);
-
+            //Commits a transaction to the database
             $this->db->commit();
-
-
-            echo "u wordt nu geredirect naar login pagina";
-            header('refresh:15;url=index.php');
-
-            // check if there's a session (created in login, should only visit here in case of admin)
-            // if (isset($_SESSION) && $_SESSION['usertype'] == self::ADMIN) {
-            //     return "New user has been succesfully added to the database";
-            // }
-            // // user gets redirected to login if method is not called by admin. 
-            // header('location: index.php');
-            // // exit makes sure that further code isn't executed.
-            // exit;
-            
-
-
-
-            exit;
         } catch (PDOException $e) {
             $this->db->rollback();
             echo "Signup mislukt, er klopt iets niet,: " . $e->getMessage();
@@ -183,7 +176,93 @@ class database
     }
 
 
-    // Functie om te checken of een user bestaat, en om het ingevoerde form te confirmen met de juiste username/password combo
+    //UNUSED FUNCTION. USE FOR EDIT
+    public function get_persoon_details($id)
+    {
+
+        $statement = $this->db->prepare("SELECT * FROM persoon WHERE id=:id");
+        $statement->execute(['id' => $id]);
+        $persoon = $statement->fetch(PDO::FETCH_ASSOC);
+        return $persoon;
+    }
+
+    // Data ophalen uit database om te tonen in frontend functie
+    public function fetch_user_data_from_database($username)
+    {
+        $sql = "
+        
+            SELECT 
+                a.id, 
+                p.id as persoon_id, 
+                a.email, 
+                a.username, 
+                u.type, 
+                p.voornaam, 
+                p.tussenvoegsel, 
+                p.achternaam
+            FROM persoon as p 
+            LEFT JOIN account as a
+            ON p.account_id = a.id
+            LEFT JOIN usertype as u
+            ON a.type_id = u.id       
+         ";
+
+        // Als meegegeven username niet gelijk is aan NULL wordt WHERE username = :username toegevoegd.
+        if ($username !== NULL) {
+            // Zodat de user alleen zijn eigen data ziet integendeel tot admin.
+            $sql .= 'WHERE a.username = :username';
+
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(['username' => $username]);
+            // fetch associative array 
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $results;
+            print_r($results);
+        } else {
+
+
+
+            $stmt = $this->db->prepare($sql);
+
+            $stmt->execute();
+            // fetch associative array 
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $results;
+            print_r($results);
+        }
+    }
+
+    // Delete user from database functie.
+    public function delete_user_from_database($persoon_id, $account_id)
+    {
+        // echo $account_id, $persoon_id;
+
+        try {
+            $this->db->beginTransaction();
+
+            $stmt = $this->db->prepare("DELETE FROM persoon WHERE id=:id");
+            $stmt->execute(['id' => $persoon_id]);
+            print_r($stmt);
+
+            $stmt = $this->db->prepare("DELETE FROM account WHERE id=:id");
+            $stmt->execute(['id' => $account_id]);
+            print_r($stmt);
+
+
+            $this->db->commit();
+        } catch (PDOException $e) {
+            $this->db->rollback();
+            echo 'Error: ' . $e->getMessage();
+        }
+    }
+
+
+
+
+
+
+    // Functie om te checken of een user bestaat, en om het ingevoerde form te confirmen met de juiste username/password combo OOK WEL LOGIN
     function user_confirmation($username, $password)
     {
         // user_check is nu niets meer dan een string, wij preparen hem om uitgevoerd te worden. De echo is een pure check.
@@ -205,19 +284,27 @@ class database
         $hpwd = $res['password'];
         $user_exists = false;
 
-
-
-        // als de username en wachtwoordcombinatie overeenkomen met data uit de database, en de user dus bestaat, wordt deze code uitgevoerd
-        if ($username && password_verify($password, $hpwd)) {
+        if ($this->admin_check($username) && $username && password_verify($password, $hpwd)) {
             $user_exists = true;
             echo "welkom: " . $username;
             session_start();
             // $_SESSION['id'] = $res['id'];
             $_SESSION['username'] = $username;
             $_SESSION['loggedin'] = true;
-            header('refresh:3;url=welcome_user.php');
+            header('refresh:3;url=welcome_admin.php');
         } else {
-            echo "Invalid username and/or password, or user does not exist" . '<br>';
+            // als de username en wachtwoordcombinatie overeenkomen met data uit de database, en de user dus bestaat, wordt deze code uitgevoerd
+            if ($username && password_verify($password, $hpwd)) {
+                $user_exists = true;
+                echo "welkom: " . $username;
+                session_start();
+                // $_SESSION['id'] = $res['id'];
+                $_SESSION['username'] = $username;
+                $_SESSION['loggedin'] = true;
+                header('refresh:3;url=welcome_user.php');
+            } else {
+                echo "Invalid username and/or password, or user does not exist" . '<br>';
+            }
         }
     }
 }
