@@ -54,6 +54,46 @@ class database
         return true;
     }
 
+
+    public function alterUser($account_details, $persoon_details)
+    {
+
+        if (is_array($account_details) && is_array($persoon_details)) {
+            echo  'meh';
+            try {
+
+                // start transactie
+                $this->db->beginTransaction();
+                // set variables voor inhoud $account_details array
+                $id = $account_details['account_id'];
+                $username = $account_details['username'];
+                $email = $account_details['email'];
+                $type = $account_details['type'];
+
+                $account_id = $this->insert_update_Account($id, $username, $email, $type, NULL);
+                // set variables
+                $id = $persoon_details['persoon_id'];
+                $voornaam = $persoon_details['voornaam'];
+                $tussenvoegsel = $persoon_details['tussenvoegsel'];
+                $achternaam = $persoon_details['achternaam'];
+                $this->insert_update_Persoon($id, $account_id, $voornaam, $tussenvoegsel, $achternaam);
+
+                // commit database change
+                $this->db->commit();
+                echo
+                    header("refresh:3;url=edit_user.php");
+                return 'User data succesfully updated';
+            } catch (Exception $e) {
+                $this->db->rollback();
+                echo 'Error occurred: ' . $e->getMessage();
+            }
+        } else {
+
+            // return string error msg
+            return 'account en persoon informatie zijn geen array.';
+        }
+    }
+
     // Functie om te checken of inlogger een admin is of niet.
     public function admin_check($username)
     {
@@ -173,6 +213,16 @@ class database
             $this->db->rollback();
             echo "Signup mislukt, er klopt iets niet,: " . $e->getMessage();
         }
+    }
+
+    public function get_account_details($id)
+    {
+
+        $statement = $this->db->prepare("SELECT * FROM account WHERE id=:id");
+        $statement->execute(['id' => $id]);
+        $account = $statement->fetch(PDO::FETCH_ASSOC);
+
+        return $account;
     }
 
 
